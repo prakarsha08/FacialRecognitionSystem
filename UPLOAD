@@ -1,0 +1,351 @@
+Implementing Image Processing for Face Detection in Security System
+
+Journal
+CSE4019-Image Processing
+
+B.Tech
+by
+ROSHNI SHARMA (15BCB0113)
+HARDIKA JUNEJA (15BCB0127)
+PRAKARSHA MALHOTRA (15BCE0138)
+
+Under the guidance of
+Prof. Anisha M
+SCOPE
+
+
+
+
+ABSTRACT- The idea is to reduce the number of thefts that occur in our houses and work places by implementing a homemade security system that is easy to install and implement. The system consists of a laser that is pointed onto a receiver. The receiver keeps sending “High voltage” to the Raspberry Pi. If the laser is broken, then the Input to the Pi cuts off, this triggers an alarm. It sends an E-Mail or a message to the owner on the registered email address that his security is being breached. It then enables the image scanner which scans the image of the person standing at the gate and if the person’s face is stored in the dataset, it allows access into the gate and the security is disabled.
+Confront acknowledgment is one of those testing issues and up and coming, there is no method that gives a strong answer for all circumstances. This paper introduces another procedure for human face acknowledgment. This strategy utilizes a picture based approach towards manmade brainpower by expelling repetitive information from face pictures through picture pressure utilizing the two-dimensional discrete cosine change (2D-DCT)
+INTRODUCTION
+
+The Raspberry Pi is a series of credit card–sized single-board computers developed in England, United Kingdom by the Raspberry Pi Foundation with the intent to promote the teaching of basic computer science in schools and developing countries.
+
+The pi is available in different models
+The Model A+ is the low-cost variant of the Raspberry Pi. It has 256MB RAM, one USB port, 40 GPIO pins and no Ethernet port. 
+The Model B+ is the final revision of the original Raspberry Pi. It has 512MB RAM (twice as much as the A+), four USB ports, 40 GPIO pins, and an Ethernet port. 
+The Pi 2 shares many specs with the Pi 1 B+, but it uses a 900MHz quad-core ARM Cortex-A7 CPU and has 1GB RAM
+The Pi 3 provides WiFi and Bluetooth compatibility directly from the pi without any 3rd party apps
+HAAR CASCADE
+Question Detection utilizing Haar include based course classifiers is a viable protest discovery strategy proposed by Paul Viola and Michael Jones in their paper, "Fast Object Detection utilizing a Boosted Cascade of Simple Features" in 2001. It is a machine learning based approach where a course capacity is prepared from a ton of positive and negative pictures. It is then used to identify questions in different pictures. 
+
+Here we will work with face recognition. At first, the calculation needs a great deal of positive (pictures of appearances) and negative (pictures without countenances) to prepare the classifier. At that point we have to concentrate highlights from it. For this, haar highlights appeared in beneath picture are utilized. They are much the same as our convolutional piece. Each component is a solitary esteem gotten by subtracting whole of pixels under white rectangle from aggregate of pixels under dark rectangle
+Presently all conceivable sizes and areas of every piece is utilized to figure a lot of elements. (Simply envision what amount of calculation it needs? Indeed, even a 24x24 window comes about more than 160000 components). For each component count, we have to discover entirety of pixels under white and dark rectangles. To tackle this, they presented the fundamental pictures. It streamlines estimation of whole of pixels, how vast might be the quantity of pixels, to an operation including only four pixels. Pleasant, would it say it isn't? It makes things super-quick. 
+
+Be that as it may, among every one of these components we figured, the greater part of them are insignificant. For instance, consider the picture underneath. Best line demonstrates two great components. The main component chose appears to concentrate on the property that the area of the eyes is regularly darker than the district of the nose and cheeks. The second element chose depends on the property that the eyes are darker than the scaffold of the nose. However, similar windows applying on cheeks or whatever other place is unessential. So how would we choose the best elements out of 160000+ components? It is accomplished by Adaboost.
+
+For this, we apply every single element on all the preparation pictures. For each element, it finds the best limit which will arrange the countenances to positive and negative. Be that as it may, clearly, there will be blunders or misclassifications. We select the elements with least mistake rate, which implies they are the elements that best groups the face and non-confront pictures. (The procedure is not as basic as this. Each picture is given an equivalent weight to start with. After every arrangement, weights of misclassified pictures are expanded. On the other hand same process is finished. New blunder rates are ascertained. Likewise new weights. The procedure is proceeded until required precision or mistake rate is accomplished or required number of components are found). 
+
+Last classifier is a weighted total of these feeble classifiers. It is called powerless on the grounds that only it can't arrange the picture, yet together with others frames a solid classifier. The paper says even 200 elements furnish identification with 95% exactness. Their last setup had around 6000 elements. (Envision a decrease from 160000+ elements to 6000 elements. That is a major pick up). 
+
+So now you take a picture. Take each 24x24 window. Apply 6000 components to it. Check in the event that it is face or not. Stunning.. Stunning.. Is it accurate to say that it isn't somewhat wasteful and tedious? Yes, it is. Creators have a decent answer for that. 
+
+In a picture, the greater part of the picture area is non-confront district. So it is a superior thought to have a straightforward technique to check if a window is not a face area. On the off chance that it is not, dispose of it in a solitary shot. Try not to process it once more. Rather concentrate on area where there can be a face. Along these lines, we can discover more opportunity to check a conceivable face locale. 
+
+For this they presented the idea of Cascade of Classifiers. Rather than applying all the 6000 components on a window, gathering the elements into various phases of classifiers and apply one-by-one. (Ordinarily initial couple of stages will contain less number of elements). On the off chance that a window comes up short the primary stage, dispose of it. We don't consider remaining elements on it. In the event that it passes, apply the second phase of components and proceed with the procedure. The window which passes all stages is a face area. How is the arrangement !!!
+
+Creators' identifier had 6000+ elements with 38 phases with 1, 10, 25, 25 and 50 highlights in initial five phases. (Two elements in the above picture is really gotten as the best two components from Adaboost). As indicated by creators, on a normal, 10 highlights out of 6000+ are assessed per sub-window. 
+
+So this is a straightforward natural clarification of how Viola-Jones confront identification functions. Perused paper for more points of interest or look at the references in Additional Resources segment. 
+
+Since skin shading in people differs by individual, investigate has uncovered that power instead of chrominance is the primary recognizing trademark. The acknowledgment arrange commonly utilizes a force (grayscale) portrayal of the picture compacted by the 2D-DCT for further processing[2]. This grayscale form contains force values for skin pixels. A piece chart of the proposed procedure of the face acknowledgment framework is introduced in Fig. 2. In the main stage, the 2D-DCT for each face picture is processed, and highlight vectors are shaped from the discrete cosine change (DCT) coefficients. The second stage utilizes a self-sorting out guide (SOM) with an unsupervised learning procedure to order vectors into gatherings to perceive if the subject in the info picture is "available" or "not present" in the picture database. In the event that the subject is named exhibit, the best match picture found in the preparation database is shown as the outcome, else the outcome shows that the subject is not found in the picture database.
+
+
+
+
+LITERATURE SURVEY
+Bernie et al. (2002) explained the utilization of an Ear Visual Biometric as a safety effort to at any rate limit data fraud in offbeat examination. With the guide of the framework, clients make utilization of ear biometrics for client distinguishing proof and secret word for client verification. Clients are recognized in view of the uniqueness of their ear structure along these lines restricting the shot of character misrepresentation. Ear discovery and acknowledgment is accomplished using Principal Component Analysis and Feature Extraction approaches.
+Anil et al. (2005) executed  face acknowledgment frameworks utilizing twodimensional (2D) pictures is subject to steady conditions, for example, lighting, stance and outward appearance. We are building up a multi-see confront acknowledgment framework that uses three-dimensional (3D) data about the face to make the framework more vigorous to these varieties. This paper portrays a strategy for building a database of 3D face models and coordinating this database to 2.5D face checks which are caught from various perspectives, utilizing coordinate framework invariant properties of the facial surface. 2.5D is a rearranged 3D (x, y, z) surface portrayal that contains at most one profundity esteem (z bearing) for each point in the (x, y) plane. A hearty comparability metric is characterized for coordinating, in light of an Iterative Closest Point (ICP) enlistment handle. Results are given for coordinating a database of 18 3D confront models with 113 2.5D face examines.
+Elena et al. (2007) examined the utilization of the Compressive Sensing (CS) strategy to the characterization issue.In this specific situation, CS is utilized as a way to test the nonlinear complex on which confronts under different light impacts dwell. The plan of arbitrarily examined confronts (Randomfaces) with closest neighbor classifier are contrasted and two established element extraction approaches, as Eigenfaces and Fisherfaces. It is demonstrated that randomfaces outflank the eigenface approach in characterizing faces under brightening unsettling influences and their execution approaches that of the Fisherfaces.
+Cohen et al. (2008) Affected by the across the board appropriation of HDTV purchaser imaging gadgets have started to highlight full HD (high thickness) video catch. With this high-determination capacity, little flaws in human appearances are caught with full HD video. At the point when utilized for representation imaging, the subsequent video is much of the time unsuitable to the client. Makers of imaging gadgets require down to earth, constant arrangements which can alleviate facial points of interest stressed by the HD determination, while safeguarding the general nature of the picture pictures. The high data transmission and handling prerequisites of full HD video make this a testing errand. In this paper, a commonsense calculation, now consolidated in various shopper gadgets is clarified. Significant difficulties and their answers are introduced. Consideration is given to ongoing advancements of the calculation which is planned with a view to its reasonableness for fractional or full equipment execution.
+Sugunaet al. (2008) Impacted by the far reaching reception of HDTV buyer imaging gadgets have started to highlight full HD (high thickness) video catch. With this high-determination capacity, little blemishes in human countenances are caught with full HD video. At the point when utilized for representation imaging, the subsequent video is much of the time unacceptable to the client. Producers of imaging gadgets require pragmatic, continuous arrangements which can relieve facial points of interest accentuated by the HD determination, while protecting the general nature of the picture pictures. The high transfer speed and handling prerequisites of full HD video make this a testing errand. In this paper, a reasonable calculation, now joined in various customer gadgets is clarified. Significant difficulties and their answers are exhibited. Consideration is given to constant enhancements of the calculation which is planned with a view to its reasonableness for fractional or full equipment usage.
+
+PROBLEM FORMULATION AND SOLUTION METHODOLOGY:
+The gate security system is one of the most important system in securing our lives and possessions. The problem is how should we safeguard it? Use of man power is both cost consuming and less reliable. Hence we have come up with a solution to this problem as we use the modern technologies to provide complete security without employing any person. The system not only senses if anyone crosses the gate but also sends a mail that the security has been breached. It will then scan the image of the person standing on the gate and if the image of the person is stored in the dataset, it will disable security and let the person in.
+
+
+The pins will be used to detect input from the receiver of the laser. We will use pin 8 as our input pin for this project. 
+When the Laser is interrupted, current in the load becomes LOW. This is sensed by the Pin 8, which is constantly monitored by the pi. The pi then triggers a buzzer alarm and also sends the Owner an Email.
+But before the Pi can send emails it needs a message transfer agent (MTA). The first one is exim4, the other one is SSMTP. The choice is yours. Needless to say, you will only need one of the two MTAs. 
+PROJECT REQUIREMENTS
+1) Laser Pointer
+2) Raspberry Pi-2 B+ 
+3) Solar cell (receiver)
+4) Resistor (10 ohm)
+5) Buzzer
+6) Wi-Fi Dongle (Not required for Pi 3)
+7) Connecting wires
+8) Bread Board
+9)  LCD Display
+10) Camera
+11) LDR sensor
+
+PROPOSED MODEL
+We  have come up with a solution where a laser pointer points to the LDR sensor.  The current does not flow in the circuit and hence the alarm is disabled. As soon as someone crosses the laser and the light pointing on the sensor is stopped, the resistance of the circuit becomes very high and hence current begins to flow in another circuit connected to the alarm and hence it beeps and an email is sent to the owner informing him of the breech in the security.
+We further allow the person at the gate to scan his/her image and if the image of the person is stored in the dataset, it will disable security and let the person in. The alarm will stop buzzing and the security will be disabled for 20 seconds.
+
+
+
+
+Face Image Preprocessing
+Face images of different candidates with different facial expressions are taken with a Canon Powershot S3 IS 6.0 megapixel digital camera in the size of 1200 × 1600 pixels (2.0 megapixels). All face images taken resemble the following general features:
+Uniform illumination conditions
+Light color background
+Faces in upright and frontal position
+Tolerance for tilting and rotation up to 20 degrees
+
+Face images are preprocessed in Adobe Photoshop CS2. Imagepreprocessing includes the following steps:
+Auto adjusting hue and saturation levels
+Adjusting brightness and contrast to fixed scale
+Desaturating 24 bit RGB color into 8 bit grayscale
+Downsizing images to 512 × 512 pixels
+Saving images in jpeg format
+
+ALGORITHM AND CODE
+1. Start
+2. Import the following packages from the following raspberry pi libraries:
+frompicamera.array import PiRGBArray
+frompicamera import PiCamera
+importRPi.GPIO as GPIO
+importsmtplib
+import time
+import cv2
+importnumpy as np
+importlcd
+3. Initialize the LCD
+4. Initialize the beep
+5. Initialize the camera and grab a reference to the raw camera capture.
+6. Initialize the Face Recognizer which is face detection using haar cascades using the following command: 
+face_cascade = cv2.CascadeClassifier('haarcascades/frontal_face.xml')
+7. Store the images taken from the camera frame into an array ‘images’
+8. Store the labels taken from the camera frame into an array ‘labels’.
+9. Set up the mail using smtp(simple message transfer protocol)
+10. Provide the userid and password for the mail sender 
+11. Provide the email address to report of security breach.
+12. Add the following as subject header and body:
+subject = 'ALERT! Security Breached'
+header = 'To: '+toAddr+'\nFrom: '+fromAdd+'\nSubject: '+subject
+body = 'Security has been breached. Please be cautious'
+13. Display initializing Camera on the LCD
+14. Allow the camera to warmup
+15. Capture frames from the camera 
+16. Convert the colour image to grayscale using the command: cv2.color_bgr2gray
+17. Input command to show the frame
+18. Run the following loop for face detection:
+i. If the length of the array which is storing the face detected >0
+  ii. Increase the count by 1
+ iii. Display detected
+ iv. Check if count>2 (to ensure that the input image is actually for detection purpose)
+Break
+   -    Clear the stream in preparation for the next frame.
+ 20. Enter command to make q the key to break the loop.
+ 21. If the input taken by the raspberry pi is real(>0), display ‘Security breached!’
+ 22. Display on the LCD as well ‘Security breached’.
+ 23. Send mail to the registered email address with the mentioned header and body.
+ 24. Display ‘Email Sent’ on the output screen.
+ 25. Display the same on LCD screen.
+ 26. Clean up the GPIO
+ 27. Exit the display.
+ 28. Check for the face detected (input) with the images already stored in the dataset
+29. Prediction levels indicate to which image does the input match the most to and confidence                              level indicate the percentage of how less they match with the dataset. Calculate it using: 
+nbr_predicted, conf = recognizer.predict(predict_img[y:y+h,x:x+w])
+ 29. Display “prediction: “, nbr_predicted
+ 30. Display “Confidence”, conf
+ 31. If the confidence level(conf) <=70, then beep and display “Security disabled”
+ 32. Stop.
+
+CODE:
+# import the necessary packages
+frompicamera.array import PiRGBArray
+frompicamera import PiCamera
+importRPi.GPIO as GPIO
+importsmtplib
+import time
+import cv2
+importnumpy as np
+importlcd
+
+#initialize LCD
+lcd.lcd_init()
+lcd.lcd_byte(lcd.LCD_LINE_1, lcd.LCD_CMD)
+lcd.lcd_string('Initializing..',2)
+GPIO.setup(17,GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(4,GPIO.OUT)
+GPIO.output(4,GPIO.LOW)
+
+def beep():
+GPIO.output(4,GPIO.HIGH)
+time.sleep(0.3)
+GPIO.output(4,GPIO.LOW)
+
+# initialize the camera and grab a reference to the raw camera capture
+camera = PiCamera()
+camera.resolution = (360, 280)
+
+#initialize Face Recognizer
+face_cascade = cv2.CascadeClassifier('haarcascades/frontal_face.xml')
+recognizer = cv2.createLBPHFaceRecognizer()
+images = np.array(np.load("./trained/trained_images.npy"))
+labels = np.array(np.load("./trained/trained_labels.npy"))
+recognizer.train(images, labels)
+
+#Setting Up Mail
+smtpUser = 'pi.raspberry.root@gmail.com'
+smtpPass = 'raspberryx'
+toAddr = 'ankur.sarode@gmail.com'
+fromAdd = smtpUser
+subject = 'ALERT! Security Breached'
+header = 'To: '+toAddr+'\nFrom: '+fromAdd+'\nSubject: '+subject
+body = 'Security has been breached. Please be cautious'
+s = smtplib.SMTP('smtp.gmail.com',587)
+
+print "initializing Camera"
+# allow the camera to warmup
+time.sleep(0.1)
+while(1):
+rawCapture = PiRGBArray(camera,size=(360, 280))
+lcd.lcd_string('Recognizing..',2)
+print "Recognizing.."
+count = 0
+    # capture frames from the camera
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+image = frame.array
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # show the frame
+cv2.imshow("Frame", image)
+key = cv2.waitKey(1) & 0xFF
+        # detecting face
+if(len(face_cascade.detectMultiScale(gray, 1.3,5))>0):
+count+=1
+print "Detected"
+if(count>2):
+break
+        # clear the stream in preparation for the next frame
+rawCapture.truncate(0)
+        # break on pressing 'q'
+if key == ord("q"):
+break
+if(GPIO.input(17)!=0):
+print('Security Breached!')
+lcd.lcd_string('SecurityBreached',2)
+s.ehlo()
+s.starttls()
+s.ehlo()
+s.login(smtpUser, smtpPass)
+s.sendmail(fromAdd, toAddr, header+'\n\n'+body)
+s.quit()
+print 'Email Sent'
+lcd.lcd_string('Email Sent',2)
+print header+'\n'+body
+time.sleep(3)
+lcd.GPIO.cleanup()
+exit(0)
+break
+lcd.lcd_string('Predection..',2)
+predict_img = gray
+faces = face_cascade.detectMultiScale(predict_img, 1.3, 5)
+for (x,y,w,h) in faces:
+nbr_predicted, conf = recognizer.predict(predict_img[y:y+h,x:x+w])
+print "Prediction: ",nbr_predicted
+print "Confidence: ",conf
+if(conf<=70):
+beep()
+print "Security Disabled"
+lcd.lcd_string('SecurityDisabled',2)
+time.sleep(20)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WORKING MODEL AND OUTPUT:
+
+
+
+
+Opening Raspberry pi:
+
+
+
+
+
+
+
+
+Running the code:
+
+
+
+
+Mail received:
+
+
+
+
+
+
+PERFORMANCE ANALYSIS
+Cоmpаrisоn with еxisting studiеs аnd mеthоds
+
+Since the raspberry pi has a limited RAM storage so capturing an image and detecting the face is a long procedure but the accuracy is high in correct lighting and internet speed. 
+
+CONCLUSION
+
+Providing security is one of the immensely growing fields of investment due to increased cases of theft and loot. Hence to attend to the need we have come up with a solution in this project to safeguard our possessions. This system will be highly beneficial in providing complete security to the homes in a cost effective manner. The accuracy level is also high which enhances the productivity of the system allowing it to be widely sold in the market. 
+
+
+REFERENCES
+[1] “ Embedded System Based Air Pollution Detection in Vehicles ” S. Arun, V. Siva Krishna, J.L Mazher Iqbal in International Journal of Emerging Technologies in Computational and Applied Sciences .
+[2] Yamada, K. and M. Soga, A compact integrated visual motion sensor for ITS applications. Intelligent Transportation Systems, IEEE Transactions on, 2003.
+[3]AzrinaAbd Aziz, Y. AhmetS¸ekercioglu, Paul Fitzpatrick, and MiloshIvanovich, “A Survey on Distributed Topology C ontrolTechniques for Extending the Lifetime of Battery Powered Wireless Sensor Networks”, IEEE communications surveys & tutorials, VOL. 15, NO. 1, FIRST QUARTER 2013
+[4]Sandborn, P.A.M. and P. Abshire. 2D motion sensor with p rogrammable feature extraction. in Circuits and Systems (ISCA S), 2013 IEEE International Symposium on. 2013. [3] Kamnik, R., S. Stegel, and M. Munih. Design and Calibration of Three Axial Inertial Motion Sensor. in Power Electronics and Motion Control Conference,2006. EPE-PEMC 2006. 12thInternational. 2006. http: //invensense.com/mems/gyro/documents/RM-MPU- 6000A.pdf. 
+[5]Kosba,Ahmed E., and Moustafa Youssef. "RASID demo: A robust WLAN device-free passive motion detection system. "
+[6]DiptiJavale, Bharti Dixit ,PankajJavale, “Performance evaluation of wireless transmission using embedded system”, IEEE paper, November 26 ,2009. 
+[7]Flavia C. Delicato, Paulo F. Pires, LuciPirmez, Thais Bat ista“Wireless Sensor Networks as a Service”, 2010 17th IEEE International Conference and Workshops on Engineering of Co mputer-Based systems
+[8] X.Y. Chen & Z. G. Jin, "Research on key technlogy and applications for Internet of Things," Physics Procedia, vol. 33, pp. 561-566, 2012 
+[9]Feng, X. & Laurence, T.Y.. 2012. Internet of Things. Internet of Things (2014), retrieved from Microsoft[ONLINE]
+[10] Jae Hoon Lee ; Yong-Shik Kim ; Bong Keun Kim ; Ohba,K. ;Kawata,H. ; Ohya,A. ; Yuta,S. “Security Door System Using Human Tracking Method with Laser Range Finders” , IEEE- International Conference on Mechatronics and Automation 2007. ICMA 2007. 
+[11] YanboZhao ;ZhaohuiYe “A low cost GSM/GPRS based wireless home security system” IEEE Transactions on Consumer Electronics, (Volume:54 , Issue: 2 ) 
+[12] Hassan,H. ; Bakar,R.A. ; Mokhtar,A.T.F. ” “Face recognition based on auto-switching magnetic door lock system using microcontroller” IEEE-International Conference on System Engineering and Technology (ICSET), 2012
+[13] Assaf, M.H. ;Mootoo, R. ; Das, S.R. ; Petriu, E.M. ; Groza, V. ;Biswas, S. “Sensor based home automation and security system” Instrumentation and Measurement Technology Conference (I2MTC), 2012 IEEE International 
+[14] Ibrahim, R. ;Zin, Z.M. “Study of automated face recognition system for office door access control application” IEEE 3rd International Conference on Communication Software and Networks (ICCSN), 2011
+[15]Baudel T. and Beaudouin-Lafon M., "Charade: remote control of objects using free-hand gestures", Communications of the ACM, voI. 36,no. 7,pp. 28-35, 1993. 
+[16] Bromley K., Perry M., and Webb G. "Trends in Smart Home S y s t e m s , C o n n e c t i v i t y a n d S e r v i c e s " , www.nextwave.org.uk,2003. [6] Kushiro N. , Suzuki S., Nakata M., Takahara H. and Inoue M., "Integrated home gateway controller for home energy management system", IEEE International Conference on Consumer Electronics, pp. 386-387,2003. 
+[17] Ok S. and Park H. , "Implementation of initial provisioning function for home gateway based on open service gateway initiative platform", The 8th International Conference on Advanced Communication Technology, pp. 1517-1520,2006. 
+[18] Saito T., Tomoda I., Takabatake Y., Ami J. and Teramoto K., "Home Gateway Architecture And Its Implementation", IEEE International Conference on Consumer Electronics, pp. 194- 195,2000.
+[19] Sriskanthan N. , Tan F. and Karande A. , "Bluetooth based home automation system", microprocessors and Microsystems, Vol. 26, no. 6, pp. 281-289, 2002.
+[20] YoonD. ,BaeD., Ko H. and Kim H., "Implementation of Home Gateway and GUI for Control the Home Appliance", The 9th International Conference on Advanced Communication Technology,PP.1583-1586,2007
+[21]AI-Ali A. R. and AI-Rousan M., "Java-based home automation system", IEEE Transactions on Consumer Electronics, vol. 50, no. 2, pp. 498- 504, 2004.
+[22] Ali M., V laskamp J.H.A, Eddiny N.N. , Falconer B. and Oram c., "Technical Development and Socioeconomic Implications of the Raspberry Pi as a Learning Tool in Developing Countries", 5th Computer Science and Electronic Engineering Conference (CEEC), pp. 103- 108,2013.
+[23] Ardam H. and Coskun I., "A remote controller for home and office appliances by telephone", IEEE Transactions on Consumer Electronics, vol. 44, no.
+[24]VineelaKadiam, G Pavani (2014), “Smart Phone Controlled Two Axes Robot for Video Surveillance Using Wireless Internet & Raspberry Pi Processor” International Journal of Research in Advent Technology, Vol.2, No.10, October E-ISSN: 2321-9637 
+[25] Virginia Menezes, VamsikrishnaPatchava, M. Surya Deekshith Gupta (2015), “Surveillance and Monitoring System Using Raspberry Pi and SimpleCV”,978-1-4673-7910- 6/15/$31.00_c IEEE
+
